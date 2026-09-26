@@ -1,0 +1,215 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Self-hosted copy of the exact icon font the original Expo web build used
+   (`@expo/vector-icons` -> react-native-vector-icons -> MaterialIcons.ttf). */
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/MaterialIcons.ttf") format("truetype");
+  font-display: block;
+}
+
+@layer base {
+  :root {
+    /* The Expo root layout forced a minimum safe-area inset
+       (`top: Math.max(top, 16)`, `bottom: Math.max(bottom, 12)`); mirror it so
+       the web layout keeps the same chrome spacing. */
+    --safe-top: max(env(safe-area-inset-top, 0px), 16px);
+    --safe-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    color-scheme: light dark;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0;
+    font-family: theme("fontFamily.sans");
+    background-color: #f5f8f7;
+    color: #173531;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* React Native has no text selection affordance on chrome/pressables by default. */
+  input,
+  textarea,
+  button,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  /* Placeholder color is passed per-input via the `--ph` custom property. */
+  input::placeholder {
+    color: var(--ph, currentColor);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* React Native primitive shims (see src/lib/rn.tsx)                          */
+/* -------------------------------------------------------------------------- */
+
+@layer base {
+  /* `View` is a flex column by default. This must live in `base` so that the
+     `flex-row` utility overrides it (same specificity, later in the sheet). */
+  .rn-view {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .rn-scroll {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    /* Lets a ScrollView shrink below its content inside a `max-h-*` flex
+       parent (the service detail sheet), which is how RN behaves. */
+    min-height: 0;
+  }
+
+  .rn-scroll-horizontal {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .rn-scroll-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .rn-scroll-content-horizontal {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .rn-press {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .rn-safe {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* KeyboardAvoidingView: a plain flex column; the keyboard padding is applied
+     inline from `visualViewport`. */
+  .rn-kav {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .rn-input {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    appearance: none;
+  }
+
+  .rn-spinner {
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 9999px;
+    animation: rn-spin 0.7s linear infinite;
+  }
+
+  .rn-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .rn-modal-fade {
+    animation: rn-fade-in 0.2s ease-out;
+  }
+
+  .rn-modal-slide {
+    animation: rn-slide-up 0.26s cubic-bezier(0.2, 0.9, 0.3, 1);
+  }
+}
+
+@keyframes rn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rn-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rn-slide-up {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rn-modal-fade,
+  .rn-modal-slide,
+  .rn-spinner {
+    animation: none;
+  }
+}
+
+@layer components {
+  /* Mirrors ScrollView's `showsVerticalScrollIndicator={false}` /
+     `showsHorizontalScrollIndicator={false}` props. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+
+@layer utilities {
+  .safe-t {
+    padding-top: var(--safe-top);
+  }
+
+  .safe-b {
+    padding-bottom: var(--safe-bottom);
+  }
+
+  .safe-l {
+    padding-left: var(--safe-left);
+  }
+
+  .safe-r {
+    padding-right: var(--safe-right);
+  }
+}

@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+
+# Environment - never commit real credentials
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Uploads created by the document scan endpoint
+uploads/
+uploads-*/
+
+# Test + tooling output
+coverage/
+*.tsbuildinfo
+*.log
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
